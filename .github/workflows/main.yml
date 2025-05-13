@@ -1,39 +1,39 @@
-name: GitHub Actions Demo  # ci文件的名字
-on: [push] # 触发CI的条件
-jobs:  # CI/CD通过执行一个个的Job来完成每个阶段的工作，这里配置每个Jobs
-  Check:  # Job的名称
-    runs-on: ubuntu-latest # Runner，github托管的虚拟机环境，用来执行下面的Job命令
-    steps: # 执行步骤
-      - name: Check # 子步骤名称
-        if: runner.os != 'Windows' # 执行条件
-        uses: actions/checkout@v2 # 使用的action，检出分支，可以使用docker hub中的镜像：docker://alpine:3.8
-​
-      - name: ESLintCode # ESLint 检测代码质量
-        uses: actions/setup-node@v2 # 使用node环境
-      - run: yarn # 执行命令安装依赖，也可以执行shell脚本./.github/scripts/build.sh
-      - run: yarn global add eslint && eslint ./src/*/**.js # 安装全局ESLint并检测代码
-​
-      - name: StyleLintCode # 检测代码样式
-        uses: actions/setup-node@v2 # 使用node环境
-      - run: yarn # 执行命令安装依赖
-      - run: yarn global add stylelist && stylelint ./src/*/**.scss # 执行检测命令
-​
-  Build: # Job名称
-    needs: Check # 决定执行的顺序，通过needs，在Check任务执行完成后执行当前任务，指出数组，可以写入多个
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-​
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Check
-        uses: actions/checkout@v2
-​
-      # Runs a single command using the runners shell
-      - name: Build
-        uses: actions/setup-node@v2
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: main
-      - run: yarn
-      - run: yarn build:pre
+name: Deploy to GitHub Pages # 定义工作流的名称
+
+on: # 定义触发工作流的事件，如push、pull_request等
+  push: # 当有push操作时触发
+    tags: # 在tag上的操作才会触发工作流
+      - 'v*.*' # 特定tag
+# 以上，总的来说，在推送类似v0.1格式的tag时，会触发工作流
+
+jobs: # 定义工作流中的作业（job）
+  build-and-deploy: # 定义一个名为 build-and-deploy 的作业，每个作业有一个唯一的名称
+    runs-on: ubuntu-latest # 指定作业运行的操作系统环境
+
+    steps: # 定义作业中的步骤（step）
+      - name: Checkout Repository # name 定义步骤的名称，便于识别和调试
+        uses: actions/checkout@v3 # 使用预定义的 actions/checkout 动作来检出代码。
+        # uses 后面指定动作的来源和版本，actions/checkout@v3 表示使用 actions/checkout 的第 3 版本。
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3 # 使用预定义的 actions/setup-node 动作来设置 Node.js 环境。
+        with: # 定义动作的输入参数
+          node-version: 20
+
+      - name: Clear Cache
+        run: | # 执行 shell 命令或脚本。run 后面指定要执行的命令或脚本，| 表示多行命令。
+          rm -rf package-lock.json node_modules # 删除 package-lock.json 和 node_modules 目录。
+
+      - name: Install Dependencies
+        run: npm install # 安装项目依赖
+
+      - name: Build Project
+        run: npm run build # 构建项目
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # 使用预定义的 peaceiris/actions-gh-pages 动作来部署项目到 GitHub Pages。
+        with:
+          github_token: ${{ secrets.XZ }}
+          publish_dir: ./dist
+          user_name: 'yxl'
+          user_email: 'yxlform@163.com'
