@@ -5,7 +5,7 @@
     "noEmit": true,  // 主配置禁用输出
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
   },
   "include": [
     "src/**/*.ts",

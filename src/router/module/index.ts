@@ -1,12 +1,9 @@
-import { RouteRecordRaw } from 'vue-router'
-
-const routerModule:RouteRecordRaw[] = [
+const routes = [
     {
         path: '/',
-        component:()=> import('@/layouts/index.vue')
-
-
+        component: () => import('@/layouts/index.vue')
     }
 
 ]
-export default routerModule
+
+export default routes
