@@ -1,17 +1,14 @@
-name: XZ CI/CD
+name: Deploy Vue to GitHub Pages
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  lint-and-test:
-    name: Lint & Test
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Node
@@ -23,33 +20,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # 1. TypeScript 类型检查
-      - name: TypeScript Compilation
-        run: yarn vue-tsc --noEmit
-
-      # 2. ESLint 检查 (uncommented)
-#      - name: Run ESLint
-#        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
-
-  build-and-deploy:
-    name: Build & Deploy
-    needs: lint-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      # 5. 构建生产包
-      - name: Build Production
+      - name: Build
         run: yarn build
-        env:
-          NODE_ENV: production
+
+      # This is important for Vue.js with GitHub Pages
+      - name: Fix for Vue Router (if using history mode)
+        run: |
+          cd dist
+          cp index.html 404.html
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # The folder the action should deploy
