@@ -2,9 +2,9 @@ name: XZ CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   lint-and-test:
@@ -30,6 +30,16 @@ jobs:
       # 2. ESLint 检查
       - name: Run ESLint
         run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
+
+#      # 3. 单元测试（Jest）
+#      - name: Run Unit Tests
+#        run: yarn test --coverage
+#        env:
+#          NODE_ENV: test
+
+#      # 4. 上传测试覆盖率
+#      - name: Upload Coverage
+#        uses: codecov/codecov-action@v3
 
   build-and-deploy:
     name: Build & Deploy
