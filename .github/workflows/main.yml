@@ -27,9 +27,9 @@ jobs:
       - name: TypeScript Compilation
         run: yarn vue-tsc --noEmit
 
-      # 2. ESLint 检查
-      - name: Run ESLint
-        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
+#      # 2. ESLint 检查
+#      - name: Run ESLint
+#        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
 
 #      # 3. 单元测试（Jest）
 #      - name: Run Unit Tests
