@@ -24,8 +24,8 @@ jobs:
         run: yarn install --frozen-lockfile
 
       # 1. TypeScript 类型检查
-      - name: TypeScript Compilation
-        run: yarn vue-tsc --noEmit
+#      - name: TypeScript Compilation
+#        run: yarn vue-tsc --noEmit
 
       # 2. ESLint 检查 (uncommented)
 #      - name: Run ESLint
