@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-console.log('aaaaaa')
+console.log('aaa')
 
 </script>
 
