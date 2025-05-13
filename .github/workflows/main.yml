@@ -25,7 +25,7 @@ jobs:
 
       # 1. TypeScript 类型检查
       - name: TypeScript Compilation
-        run: yarn tsc --noEmit
+        run: yarn vue-tsc --noEmit
 
       # 2. ESLint 检查
       - name: Run ESLint
