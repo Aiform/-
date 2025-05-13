@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages # 定义工作流的名称
+
+on: # 定义触发工作流的事件，如push、pull_request等
+  push: # 当有push操作时触发
+    tags: # 在tag上的操作才会触发工作流
+      - 'v*.*' # 特定tag
+# 以上，总的来说，在推送类似v0.1格式的tag时，会触发工作流
+
+jobs: # 定义工作流中的作业（job）
+  build-and-deploy: # 定义一个名为 build-and-deploy 的作业，每个作业有一个唯一的名称
+    runs-on: ubuntu-latest # 指定作业运行的操作系统环境
+
+    steps: # 定义作业中的步骤（step）
+      - name: Checkout Repository # name 定义步骤的名称，便于识别和调试
+        uses: actions/checkout@v3 # 使用预定义的 actions/checkout 动作来检出代码。
+        # uses 后面指定动作的来源和版本，actions/checkout@v3 表示使用 actions/checkout 的第 3 版本。
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3 # 使用预定义的 actions/setup-node 动作来设置 Node.js 环境。
+        with: # 定义动作的输入参数
+          node-version: 20
+
+      - name: Clear Cache
+        run: | # 执行 shell 命令或脚本。run 后面指定要执行的命令或脚本，| 表示多行命令。
+          rm -rf package-lock.json node_modules # 删除 package-lock.json 和 node_modules 目录。
+
+      - name: Install Dependencies
+        run: npm install # 安装项目依赖
+
+      - name: Build Project
+        run: npm run build # 构建项目
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # 使用预定义的 peaceiris/actions-gh-pages 动作来部署项目到 GitHub Pages。
+        with:
+          github_token: ${{ secrets.XZ }}
+          publish_dir: ./dist
+          user_name: 'yxl'
+          user_email: 'yxlform@163.com'
