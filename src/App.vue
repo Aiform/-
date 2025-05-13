@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const props = defineProps({})
+
+console.log('aaa')
 
 </script>
 
