@@ -1,52 +1,39 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run tests
-        run: npm test
-
-  build-and-deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build project
-        run: npm run build
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          scope: ${{ secrets.VERCEL_ORG_ID }}
+name: GitHub Actions Demo  # ci文件的名字
+on: [push] # 触发CI的条件
+jobs:  # CI/CD通过执行一个个的Job来完成每个阶段的工作，这里配置每个Jobs
+  Check:  # Job的名称
+    runs-on: ubuntu-latest # Runner，github托管的虚拟机环境，用来执行下面的Job命令
+    steps: # 执行步骤
+      - name: Check # 子步骤名称
+        if: runner.os != 'Windows' # 执行条件
+        uses: actions/checkout@v2 # 使用的action，检出分支，可以使用docker hub中的镜像：docker://alpine:3.8
+​
+      - name: ESLintCode # ESLint 检测代码质量
+        uses: actions/setup-node@v2 # 使用node环境
+      - run: yarn # 执行命令安装依赖，也可以执行shell脚本./.github/scripts/build.sh
+      - run: yarn global add eslint && eslint ./src/*/**.js # 安装全局ESLint并检测代码
+​
+      - name: StyleLintCode # 检测代码样式
+        uses: actions/setup-node@v2 # 使用node环境
+      - run: yarn # 执行命令安装依赖
+      - run: yarn global add stylelist && stylelint ./src/*/**.scss # 执行检测命令
+​
+  Build: # Job名称
+    needs: Check # 决定执行的顺序，通过needs，在Check任务执行完成后执行当前任务，指出数组，可以写入多个
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+​
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check
+        uses: actions/checkout@v2
+​
+      # Runs a single command using the runners shell
+      - name: Build
+        uses: actions/setup-node@v2
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: main
+      - run: yarn
+      - run: yarn build:pre
