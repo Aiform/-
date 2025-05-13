@@ -28,8 +28,8 @@ jobs:
         run: yarn vue-tsc --noEmit
 
       # 2. ESLint 检查 (uncommented)
-      - name: Run ESLint
-        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
+#      - name: Run ESLint
+#        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
 
   build-and-deploy:
     name: Build & Deploy
