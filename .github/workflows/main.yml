@@ -1,34 +1,61 @@
-name: GitHub Actions Demo
-on: [push]
+name: XZ CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
-  Check:
+  lint-and-test:
+    name: Lint & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Check
-        if: runner.os != 'Windows'
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: ESLintCode
-        uses: actions/setup-node@v2
-      - run: yarn
-      - run: yarn global add eslint && eslint ./src/*/**.ts
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn' # 或 'npm'
 
-      - name: StyleLintCode
-        uses: actions/setup-node@v2
-      - run: yarn
-      - run: yarn global add stylelint && stylelint ./src/*/**.scss
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile # 或 npm ci
 
-  Build:
-    needs: Check
+      # 1. TypeScript 类型检查
+      - name: TypeScript Compilation
+        run: yarn tsc --noEmit
+
+      # 2. ESLint 检查
+      - name: Run ESLint
+        run: yarn eslint 'src/**/*.{ts,tsx,vue}' --max-warnings=0
+
+  build-and-deploy:
+    name: Build & Deploy
+    needs: lint-and-test # 依赖 lint-and-test 成功后才执行
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' # 仅 main 分支触发部署
     steps:
-      - name: Check
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Build
-        uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # 5. 构建生产包
+      - name: Build Production
+        run: yarn build
         env:
-          ACCESS_TOKEN: ${{ secrets.XZ }}
-          BRANCH: main
-      - run: yarn
-      - run: yarn build:pre
+          NODE_ENV: production
+
+      # 6. 部署到 Vercel（或其他平台）
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.XZ }}
