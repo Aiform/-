@@ -553,7 +553,7 @@
 
 "@stylistic/eslint-plugin@^4.2.0":
   version "4.2.0"
-  resolved "https://registry.npmmirror.com/@stylistic/eslint-plugin/-/eslint-plugin-4.2.0.tgz"
+  resolved "https://registry.npmmirror.com/@stylistic/eslint-plugin/-/eslint-plugin-4.2.0.tgz#7860ea84aa7ee3b21757907b863eb62f4f8b0455"
   integrity sha512-8hXezgz7jexGHdo5WN6JBEIPHCSFyyU4vgbxevu4YLVS5vl+sxqAAGyXSzfNDyR6xMNSH5H1x67nsXcYMOHtZA==
   dependencies:
     "@typescript-eslint/utils" "^8.23.0"
@@ -1283,6 +1283,11 @@ eslint-config-prettier@^10.1.5:
   version "10.1.5"
   resolved "https://registry.npmmirror.com/eslint-config-prettier/-/eslint-config-prettier-10.1.5.tgz"
   integrity sha512-zc1UmCpNltmVY34vuLRV61r1K27sWuX39E+uyUnY8xS2Bex88VV9cugG+UZbRSRGtGyFboj+D8JODyme1plMpw==
+
+eslint-define-config@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/eslint-define-config/-/eslint-define-config-2.1.0.tgz#9708b3efd57637b6fb685d9c2fb6285b9acfbd71"
+  integrity sha512-QUp6pM9pjKEVannNAbSJNeRuYwW3LshejfyBBpjeMGaJjaDUpVps4C6KVR8R7dWZnD3i0synmrE36znjTkJvdQ==
 
 eslint-plugin-prettier@^5.4.0:
   version "5.4.0"
