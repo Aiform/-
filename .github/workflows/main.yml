@@ -53,13 +53,3 @@ jobs:
         run: yarn build
         env:
           NODE_ENV: production
-
-      # 6. 部署到 Vercel（完整配置）
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.XZ }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./
-          vercel-args: '--prod'
